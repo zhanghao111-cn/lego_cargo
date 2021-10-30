@@ -38,6 +38,21 @@ def line_follow(speed,m_reflect):
         movement_motor.start((m_reflect-col_sensor.get_reflected_light())*2)
         if(col_sensor.get_color() == 'red'):
             movement_motor.stop()
+
+def move_arm_up(degree,speed):
+    print("Move arm up")
+    arm_motor.run_for_degrees(degree,speed)
+
+
+def move_arm_down(degree,speed):
+    print("Move arm down")
+    arm_motor.run_for_degrees(-degree,speed)
+
+def move_arm_down_turbo():
+    print("Move up down with maximum power and speed")
+    arm_motor.start_at_power(100)
+    arm_motor.run_for_degrees(180,100)
+
 #----------------------------------------------------------------------------------------------------------------------------------------------------
 
 #Variable definition
