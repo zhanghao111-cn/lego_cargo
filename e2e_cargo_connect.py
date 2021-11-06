@@ -7,7 +7,7 @@ from math import *
 
 #Object
 #----------------------------------------------------------------------------------------------------------------------------------------------------
-hub = PrimeHub() 
+hub = PrimeHub()
 mm_motor = MotorPair("C","D")
 arm_motor = Motor("E")
 col_sensor = ColorSensor("B")
@@ -78,6 +78,8 @@ middle_reflection = 80 # used for the line follower or accurate positioning.
 
 #Execution
 hub.light_matrix.show_image('HAPPY')
+hub.motion_sensor.reset_yaw_angle()
+
 while True:
     hub.left_button.wait_until_pressed()
     if(switch_flag == 1):
