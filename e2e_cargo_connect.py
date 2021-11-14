@@ -8,12 +8,12 @@ from math import *
 #Object
 #----------------------------------------------------------------------------------------------------------------------------------------------------
 hub = PrimeHub()
-mm_motor = MotorPair("C","D")
-right_motor = Motor("D")
-left_motor = Motor("C")
-arm_motor = Motor("E")
-col_sensor = ColorSensor("B")
-dis_sensor = DistanceSensor("F")
+mm_motor = MotorPair("A","B")
+right_motor = Motor("B")
+left_motor = Motor("A")
+arm_motor = Motor("C")
+col_sensor = ColorSensor("D")
+dis_sensor = DistanceSensor("E")
 #----------------------------------------------------------------------------------------------------------------------------------------------------
 
 #Function definition
@@ -29,7 +29,7 @@ def right_turn(degrees,speed,reset):
 
 def reset_turn():
     mm_motor.set_default_speed(normal_speed)
-   # hub.motion_sensor.reset_yaw_angle()
+# hub.motion_sensor.reset_yaw_angle()
     while(hub.motion_sensor.get_yaw_angle()>0):
         mm_motor.start(-100)
     mm_motor.stop()
@@ -77,18 +77,13 @@ def move_arm_down_turbo():
     arm_motor.run_for_degrees(180,100)
 
 def gyro_straight(target_yawn, distance, power):
-    hub.motion_sensor.reset_yaw_angle()
-    right_motor.run_to_position(0)
-    while(right_motor.get_degrees_counted < (distance / 17.5 * 360)):
-        #print(distance / 17.5 * 360)
-        print(right_motor.get_degrees_counted())
+    #hub.motion_sensor.reset_yaw_angle()
+    right_motor.set_degrees_counted(0)
+    print("degree counted initial==================================:", right_motor.get_degrees_counted())
+# right_motor.run_to_position(0)
+    while(abs(right_motor.get_degrees_counted()) <= (distance / 17.5 * 360)):
         correction = target_yawn - hub.motion_sensor.get_yaw_angle()
-        #mm_motor.start_at_power((power + correction), (power - correction))
-        #mm_motor.start_at_power((power - correction), (power + correction))
-        #mm_motor.move_tank(10,"degrees",int(power + correction), int(power - correction ))
-    
- #       print(power + correction)
-
+        mm_motor.start_tank_at_power((power + correction), (power - correction))
     mm_motor.stop()
 
 def pid_turn(target_angle, p_constant, min_power):
@@ -112,7 +107,7 @@ def pid_line_follow(kp,ki,kd,distance):
     motor_power = 27
     target_light = 80
     right_motor.run_to_position(0)
-    while(right_motor.get_position() > distance / 17.5 * 360):
+    while(right_motor.get_position() < distance / 17.5 * 360):
         error = target_light - col_sensor.get_reflected_light()
         integral = error + integral
         derivative = error - last_err
@@ -133,8 +128,8 @@ middle_reflection = 80 # used for the line follower or accurate positioning.
 
 #Execution
 hub.light_matrix.show_image('HAPPY')
-hub.motion_sensor.reset_yaw_angle()
-"""
+
+
 while True:
     hub.left_button.wait_until_pressed()
     if(switch_flag == 1):
@@ -177,23 +172,45 @@ while True:
         print(switch_flag)
         print("Round1")
 #Round 1 start
-#Yifei coding on this part
         wait_for_seconds(1)
-        mm_motor.move(600,"degrees",0)#step1
-        right_turn_motor(90,normal_speed)#step2
-        #Option1: straight move
-        mm_motor.move(600,"degrees",0)
-        right_turn_motor(90,normal_speed)#step3
-        mm_motor.move(700,"degrees",0)
-        left_turn_motor(60,normal_speed)
-        mm_motor.move(500,"degrees",0)
-        right_turn_motor(240,normal_speed)
+        hub.motion_sensor.reset_yaw_angle()
+        mm_motor = MotorPair("B","A")
+        gyro_straight(0,115,50)
+        mm_motor = MotorPair("A","B")
+        left_turn_motor(88,30)
+        mm_motor = MotorPair("B","A")
+        gyro_straight(-49,89,50)
+        mm_motor = MotorPair("A","B")
+        print("yaw after gyro straight", hub.motion_sensor.get_yaw_angle())
+        #hub.motion_sensor.reset_yaw_angle()
+        #right_turn(50,30,0)
+        #mm_motor.move(600,"degrees",0)
         mm_motor.move(130,"degrees",0)
-        move_arm_up(90,slow_speed)
-        mm_motor.move(-60,"degrees",0)
-        right_turn_motor(180,normal_speed)
-        mm_motor.move(2000,"degrees",0)
-        #Option2: line following
+        right_turn(0,30,0)
+        print("yaw after right turn 1", hub.motion_sensor.get_yaw_angle())
+        mm_motor.move(200,"degrees",0)
+        #hub.motion_sensor.reset_yaw_angle()
+        wait_for_seconds(1)
+        while True:
+            if(dis_sensor.get_distance_cm() > 20):
+                mm_motor.start(0,-10)
+        #if(dis_sensor.get_distance_cm() < 31):
+        #    mm_motor.start(0,-10)
+            if(dis_sensor.get_distance_cm() <= 20):
+                mm_motor.stop()
+                break
+        wait_for_seconds(1)
+        left_turn_motor(145,30)
+        #right_turn(90,30,0)
+        arm_motor.run_for_rotations(-1)       
+        gyro_straight(-86,32,25)
+        wait_for_seconds(1)
+        arm_motor.set_default_speed(30)
+        arm_motor.run_for_rotations(1.25)
+        mm_motor.move(-22,"cm",0)
+        #mm_motor = MotorPair("A","B")
+        right_turn_motor(75,30)
+        gyro_straight(1,185,70)
 #Round 1 end
     switch_flag = 1
     hub.right_button.wait_until_pressed()
@@ -209,7 +226,7 @@ while True:
     right_turn_motor(90,normal_speed)
     mm_motor.move(-800,"degrees",0)
 #Round 2 end
-
+"""
 hub.motion_sensor.reset_yaw_angle()
 right_turn(50,30,0)
 mm_motor.move(600,"degrees",0)
@@ -220,8 +237,8 @@ hub.motion_sensor.reset_yaw_angle()
 while True:
     if(dis_sensor.get_distance_cm() > 30):
         mm_motor.start(0,10)
- #   if(dis_sensor.get_distance_cm() < 31):
- #       mm_motor.start(0,-10)
+ #if(dis_sensor.get_distance_cm() < 31):
+ #    mm_motor.start(0,-10)
     if(dis_sensor.get_distance_cm() <= 30):
         mm_motor.stop()
         break
@@ -242,7 +259,6 @@ right_turn(166,50,0)
 print(hub.motion_sensor.get_yaw_angle())
 mm_motor.move(1000,"degrees",0)
 """
-gyro_straight(0,10,70)
 
 
 
