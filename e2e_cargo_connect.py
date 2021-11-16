@@ -109,13 +109,13 @@ def pid_line_follow(kp,ki,kd,distance):
     integral = 0
     motor_power = 27
     target_light = 80
-    right_motor.run_to_position(0)
-    while(right_motor.get_position() < distance / 17.5 * 360):
+    right_motor.set_degrees_counted(0)
+    while(right_motor.get_degrees_counted() < distance / 17.5 * 360):
         error = target_light - col_sensor.get_reflected_light()
         integral = error + integral
         derivative = error - last_err
         correction = (error * kp) + (integral * ki) + (derivative * kd)
-        mm_motor.start_at_power((motor_power + correction), (motor_power - correction))
+        mm_motor.start_tank_at_power((power + correction), (power - correction))
         last_err = error
     mm_motor.stop()
 
