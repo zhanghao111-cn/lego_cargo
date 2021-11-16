@@ -37,8 +37,7 @@ def reset_turn():
 
 def right_turn_motor(degrees,speed):
     mm_motor.set_default_speed(speed)
-    mm_motor.move_tank(degrees,'degrees',50,0)
-    #mm_motor.move(degrees,'degrees',100)
+    mm_motor.move_tank(degrees,'degrees',speed,0)
     mm_motor.stop()
 
 def left_turn(degrees,speed,reset):
@@ -52,7 +51,6 @@ def left_turn(degrees,speed,reset):
 
 def left_turn_motor(degrees,speed):
     mm_motor.set_default_speed(speed)
-    #mm_motor.move(degrees,'degrees',-100)
     mm_motor.move_tank(degrees,'degrees',0,speed)
     mm_motor.stop()
 
@@ -210,11 +208,10 @@ while True:
     print("Round2")
 #Round 2 start
     wait_for_seconds(1)
-    gyro_straight_foward(0,30,normal_speed)#step1
+    gyro_straight_foward(0,55,normal_speed)#step1
     right_turn_motor(90,normal_speed)#step2
-    mm_motor.move(600,"degrees",0)
-    mm_motor.move(-100,"degrees",0)
+    gyro_straight_foward(0,50,fast_speed)
+    gyro_straight_backward(0,3,normal_speed)
     move_arm_up(90,slow_speed)
-    right_turn_motor(90,normal_speed)
-    mm_motor.move(-800,"degrees",0)
+    gyro_straight_backward(0,80,fast_speed)
 #Round 2 end
