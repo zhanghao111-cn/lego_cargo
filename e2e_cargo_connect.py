@@ -141,13 +141,17 @@ while True:
         print("Round3")
 #Round 3 start
         wait_for_seconds(1)
+        #arm_motor.set_stall_detection(True)
+        #arm_motor.run_for_rotations(-1,30)
+        #if arm_motor.was_stalled():
+        #    arm_motor.stop()
         mm_motor = MotorPair("A","B")
         hub.motion_sensor.reset_yaw_angle()
-        gyro_straight_forward(0,43,normal_speed)# moving straight North from launching aera
-        right_turn_motor(80,slow_speed)#step2    trun right robot heading east
+        gyro_straight_forward(0,40,normal_speed)# moving straight North from launching aera
+        right_turn_motor(100,slow_speed)#step2    trun right robot heading east
         #move_arm_up(25,slow_speed) #lift arm up to pass platooning truck
 
-        gyro_straight_forward(90,60,normal_speed) # complete to move the platooning truck
+        gyro_straight_forward(90,62,normal_speed) # complete to move the platooning truck
         move_arm_up(44,slow_speed) #lift arm up to pass platooning truck
         gyro_straight_forward(90,30,normal_speed) # hit west bridge down
         move_arm_up(50,slow_speed) # lift arm up to pass the east bridge piece
@@ -163,11 +167,12 @@ while True:
             """
         #move_arm_down(80,slow_speed) # lower arm to hold the cargo
         mm_motor = MotorPair("A","B")
-        gyro_straight_forward(90,40,fast_speed) #moving toward east
+        gyro_straight_forward(90,32,fast_speed) #moving toward east
         right_turn_motor(180,slow_speed) #right turn to enter Cargo Connect circle
-        gyro_straight_forward(180,2,slow_speed) #adjust robot heading south
+        gyro_straight_forward(170,2,slow_speed) #adjust robot heading south
         move_arm_up(80,slow_speed) # lift up arm to release cargos
-        mm_motor = MotorPair("B","A")
+        #mm_motor = MotorPair("B","A")
+        mm_motor.move()
         gyro_straight_forward(170,50,slow_speed) # backing up to unload cargo ship
         right_turn_motor(80,slow_speed) # robot heading west
         mm_motor = MotorPair("A","B")
