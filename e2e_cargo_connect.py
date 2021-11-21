@@ -123,7 +123,7 @@ def pid_line_follow(kp,ki,kd,distance):
 #----------------------------------------------------------------------------------------------------------------------------------------------------
 #Variable definition
 #----------------------------------------------------------------------------------------------------------------------------------------------------
-switch_flag = 0 # use as a local variable to switch between round1 and round3
+switch_flag = 1 # use as a local variable to switch between round1 and round3
 fast_speed = 70 # maximum speed
 normal_speed = 50 # normal speed for routine.
 slow_speed = 35 #slow speed to control the accuracy
@@ -141,35 +141,57 @@ while True:
         print("Round3")
 #Round 3 start
         wait_for_seconds(1)
-        mm_motor.move(600,"degrees",0)#step1
-        right_turn_motor(90,normal_speed)#step2
-        mm_motor.move(600,"degrees",0)
-        right_turn_motor(90,normal_speed)#step3
-        mm_motor.move(300,"degrees",0)
-        move_arm_down(90,normal_speed)#step4
-        mm_motor.move(500,"degrees",0)
-        move_arm_up(20,normal_speed)#step5
-        mm_motor.move(300,"degrees",0)
-        move_arm_up(90,normal_speed)
-        mm_motor.move(100,"degrees",0)
-        right_turn_motor(180,normal_speed)#step6 start
-        mm_motor.move(100,"degrees",0)
-        mm_motor.move(-100,"degrees",0)
-        move_arm_down(30,normal_speed)
-        right_turn_motor(100,normal_speed)
-        move_arm_up(30,normal_speed)
-        left_turn_motor(100,normal_speed)
-        mm_motor.move(-400,"degrees",0)#step6 stop
-        right_turn_motor(180,normal_speed)#step7 start
-        move_arm_down(30,normal_speed)
-        mm_motor.move(-300,"degrees",0)#step8
-        move_arm_up(100,normal_speed)
-        mm_motor.move(700,"degrees",0)#step9
-        left_turn_motor(180,normal_speed)
-        mm_motor.move(-600,"degrees",0)
-        mm_motor.move(50,"degrees",0)#step10
-        right_turn_motor(180,normal_speed)
-        mm_motor.move(80,"degrees",0)#step11
+        mm_motor = MotorPair("A","B")
+        hub.motion_sensor.reset_yaw_angle()
+        gyro_straight_forward(0,43,normal_speed)# moving straight North from launching aera
+        right_turn_motor(80,slow_speed)#step2    trun right robot heading east
+        #move_arm_up(25,slow_speed) #lift arm up to pass platooning truck
+
+        gyro_straight_forward(90,60,normal_speed) # complete to move the platooning truck
+        move_arm_up(44,slow_speed) #lift arm up to pass platooning truck
+        gyro_straight_forward(90,30,normal_speed) # hit west bridge down
+        move_arm_up(50,slow_speed) # lift arm up to pass the east bridge piece
+        gyro_straight_forward(90,15,normal_speed) #pass east bridge
+        move_arm_down(100,slow_speed) # lower arm to hit east bridge
+        mm_motor = MotorPair("B","A")
+        gyro_straight_forward(90,20,fast_speed) #backward to hit east bridge
+        arm_motor.set_stall_detection(True)
+        """
+        arm_motor.run_for_rotations(-2)
+        if arm_motor.was_stalled():
+            arm_motor.stop()
+            """
+        #move_arm_down(80,slow_speed) # lower arm to hold the cargo
+        mm_motor = MotorPair("A","B")
+        gyro_straight_forward(90,40,fast_speed) #moving toward east
+        right_turn_motor(180,slow_speed) #right turn to enter Cargo Connect circle
+        gyro_straight_forward(180,2,slow_speed) #adjust robot heading south
+        move_arm_up(80,slow_speed) # lift up arm to release cargos
+        mm_motor = MotorPair("B","A")
+        gyro_straight_forward(170,50,slow_speed) # backing up to unload cargo ship
+        right_turn_motor(80,slow_speed) # robot heading west
+        mm_motor = MotorPair("A","B")
+        gyro_straight_forward(-90,20,slow_speed) #adjust robot heading west
+        move_arm_down(50,slow_speed)
+        mm_motor = MotorPair("B","A")
+        gyro_straight_forward(-90,70,normal_speed) #moving the cargo ship - backing up to east
+        mm_motor = MotorPair("A","B")
+        gyro_straight_forward(-90,70,normal_speed) #moving forward to west
+        left_turn_motor(180,slow_speed) #facing south
+        mm_motor = MotorPair("B","A")
+        move_arm_up(150,slow_speed)
+        #backing up to parking location
+        while True:
+                if(dis_sensor.get_distance_cm() > 1):
+                    gyro_straight_forward(-180,dis_sensor.get_distance_cm(),normal_speed)
+                if(dis_sensor.get_distance_cm() <= 1):
+                    mm_motor.stop()
+                    break
+        wait_for_seconds(1)
+        mm_motor = MotorPair("A","B")
+        right_turn_motor(90,slow_speed) #facing west
+        move_arm_up(40,slow_speed) # need to confirm the lifting arm height
+        gyro_straight_forward(-90,8,normal_speed)    #moveing forward to parking spot ??? using disctance sensor?
 #Round 3 end
     if(switch_flag == 0):
         hub.light_matrix.write('1')
@@ -224,3 +246,9 @@ while True:
     move_arm_down_turbo()
     gyro_straight_forward(90,80,fast_speed)
 #Round 2 end
+
+    switch_flag = 1
+    hub.right_button.wait_until_pressed()
+    hub.light_matrix.write('3')
+    print("Round3")
+#Round 3 start
