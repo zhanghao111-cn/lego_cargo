@@ -12,9 +12,10 @@ mm_motor = MotorPair("A","B")
 #rmm_motor = MotorPair("B","A")
 right_motor = Motor("B")
 left_motor = Motor("A")
-arm_motor = Motor("C")
-col_sensor = ColorSensor("F")
+arm_motor = Motor("F")
+col_sensor = ColorSensor("C")
 dis_sensor = DistanceSensor("D")
+tail_motor = Motor("E")
 #----------------------------------------------------------------------------------------------------------------------------------------------------
 
 #Function definition
@@ -66,9 +67,19 @@ def move_arm_up(degree,speed):
     print("Move arm up")
     arm_motor.run_for_degrees(degree,speed)
 
+def move_tail_arm_up(degree,speed):
+    print("Move arm up")
+    tail_motor.run_for_degrees(-degree,speed)
+
+
 def move_arm_down(degree,speed):
     print("Move arm down")
     arm_motor.run_for_degrees(-degree,speed)
+
+def move_tail_arm_down(degree,speed):
+    print("Move arm down")
+    tail_motor.run_for_degrees(degree,speed)
+
 
 def move_arm_down_turbo():
     print("Move up down with maximum power and speed")
@@ -140,63 +151,66 @@ while True:
         hub.light_matrix.write('3')
         print("Round3")
 #Round 3 start
+
         wait_for_seconds(1)
         #arm_motor.set_stall_detection(True)
         #arm_motor.run_for_rotations(-1,30)
         #if arm_motor.was_stalled():
         #    arm_motor.stop()
+        move_arm_down_turbo()
         mm_motor = MotorPair("A","B")
         hub.motion_sensor.reset_yaw_angle()
-        gyro_straight_forward(0,40,normal_speed)# moving straight North from launching aera
-        right_turn_motor(100,slow_speed)#step2    trun right robot heading east
-        #move_arm_up(25,slow_speed) #lift arm up to pass platooning truck
-
-        gyro_straight_forward(90,62,normal_speed) # complete to move the platooning truck
-        move_arm_up(44,slow_speed) #lift arm up to pass platooning truck
-        gyro_straight_forward(90,30,normal_speed) # hit west bridge down
-        move_arm_up(50,slow_speed) # lift arm up to pass the east bridge piece
-        gyro_straight_forward(90,15,normal_speed) #pass east bridge
-        move_arm_down(100,slow_speed) # lower arm to hit east bridge
+        gyro_straight_forward(0,39,normal_speed)# moving straight North from launching aera
+        print("gyro degree before right turn", hub.motion_sensor.get_yaw_angle())
+        right_turn_motor(130,slow_speed)#step2    trun right robot heading east
+       # move_arm_up(20,slow_speed) #lift arm up to pass platooning truck
+        print("gyro degree before turn", hub.motion_sensor.get_yaw_angle())
+        gyro_straight_forward(89,83,normal_speed) # complete to move the platooning truck
+        #move_tail_arm_up(20,normal_speed) #lift arm up to pass platooning truck
+        #gyro_straight_forward(89,20,normal_speed) # hit west bridge down
+        move_tail_arm_up(10,slow_speed) # lift arm up to pass the east bridge piece
+        gyro_straight_forward(89,20,normal_speed) #pass east bridge
+        move_tail_arm_up(20,normal_speed) # lower arm to hit east bridge
+        gyro_straight_forward(89,20,normal_speed) #pass east bridge
+        move_tail_arm_down(20,normal_speed)
         mm_motor = MotorPair("B","A")
-        gyro_straight_forward(90,20,fast_speed) #backward to hit east bridge
+        gyro_straight_forward(90,15,slow_speed) #backward to hit east bridge
         arm_motor.set_stall_detection(True)
-        """
-        arm_motor.run_for_rotations(-2)
-        if arm_motor.was_stalled():
-            arm_motor.stop()
-            """
+    
         #move_arm_down(80,slow_speed) # lower arm to hold the cargo
         mm_motor = MotorPair("A","B")
-        gyro_straight_forward(90,32,fast_speed) #moving toward east
-        right_turn_motor(180,slow_speed) #right turn to enter Cargo Connect circle
+        gyro_straight_forward(90,3,fast_speed) #moving toward east
+        right_turn_motor(180,slow_speed-10) #right turn to enter Cargo Connect circle
         gyro_straight_forward(170,2,slow_speed) #adjust robot heading south
-        move_arm_up(80,slow_speed) # lift up arm to release cargos
-        #mm_motor = MotorPair("B","A")
-        mm_motor.move()
-        gyro_straight_forward(170,50,slow_speed) # backing up to unload cargo ship
-        right_turn_motor(80,slow_speed) # robot heading west
+        move_arm_up(200,slow_speed) # lift up arm to release cargos
+
+        mm_motor = MotorPair("B","A")
+        #mm_motor.move(50,'cm',170,slow_speed)
+        gyro_straight_forward(170,30,slow_speed) # backing up to unload cargo ship
+        
+        right_turn_motor(180,slow_speed-10) # robot heading west
+        
         mm_motor = MotorPair("A","B")
         gyro_straight_forward(-90,20,slow_speed) #adjust robot heading west
         move_arm_down(50,slow_speed)
+        
         mm_motor = MotorPair("B","A")
         gyro_straight_forward(-90,70,normal_speed) #moving the cargo ship - backing up to east
+        move_arm_up(150,slow_speed)
         mm_motor = MotorPair("A","B")
         gyro_straight_forward(-90,70,normal_speed) #moving forward to west
         left_turn_motor(180,slow_speed) #facing south
         mm_motor = MotorPair("B","A")
-        move_arm_up(150,slow_speed)
-        #backing up to parking location
-        while True:
-                if(dis_sensor.get_distance_cm() > 1):
-                    gyro_straight_forward(-180,dis_sensor.get_distance_cm(),normal_speed)
-                if(dis_sensor.get_distance_cm() <= 1):
-                    mm_motor.stop()
-                    break
-        wait_for_seconds(1)
+        
+        gyro_straight_forward(-179,5,normal_speed) #moving forward to north
         mm_motor = MotorPair("A","B")
-        right_turn_motor(90,slow_speed) #facing west
-        move_arm_up(40,slow_speed) # need to confirm the lifting arm height
-        gyro_straight_forward(-90,8,normal_speed)    #moveing forward to parking spot ??? using disctance sensor?
+        gyro_straight_forward(0,1,normal_speed)
+
+        right_turn_motor(180,slow_speed)
+        mm_motor.move(600,'degrees',0,42)
+       
+
+
 #Round 3 end
     if(switch_flag == 0):
         hub.light_matrix.write('1')
