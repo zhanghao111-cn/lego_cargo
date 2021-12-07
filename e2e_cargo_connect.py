@@ -163,52 +163,53 @@ while True:
         gyro_straight_forward(0,39,normal_speed)# moving straight North from launching aera
         print("gyro degree before right turn", hub.motion_sensor.get_yaw_angle())
         right_turn_motor(130,slow_speed)#step2    trun right robot heading east
-       # move_arm_up(20,slow_speed) #lift arm up to pass platooning truck
+    # move_arm_up(20,slow_speed) #lift arm up to pass platooning truck
         print("gyro degree before turn", hub.motion_sensor.get_yaw_angle())
-        gyro_straight_forward(89,83,normal_speed) # complete to move the platooning truck
+        gyro_straight_forward(89,84,normal_speed) # complete to move the platooning truck
         #move_tail_arm_up(20,normal_speed) #lift arm up to pass platooning truck
         #gyro_straight_forward(89,20,normal_speed) # hit west bridge down
         move_tail_arm_up(10,slow_speed) # lift arm up to pass the east bridge piece
-        gyro_straight_forward(89,20,normal_speed) #pass east bridge
-        move_tail_arm_up(20,normal_speed) # lower arm to hit east bridge
+        gyro_straight_forward(89,19,normal_speed) #pass east bridge
+        move_tail_arm_up(24,normal_speed) # lower arm to hit east bridge
         gyro_straight_forward(89,20,normal_speed) #pass east bridge
         move_tail_arm_down(20,normal_speed)
         mm_motor = MotorPair("B","A")
         gyro_straight_forward(90,15,slow_speed) #backward to hit east bridge
         arm_motor.set_stall_detection(True)
-    
+
         #move_arm_down(80,slow_speed) # lower arm to hold the cargo
         mm_motor = MotorPair("A","B")
         gyro_straight_forward(90,3,fast_speed) #moving toward east
         right_turn_motor(180,slow_speed-10) #right turn to enter Cargo Connect circle
-        gyro_straight_forward(170,2,slow_speed) #adjust robot heading south
+        gyro_straight_forward(170,1,slow_speed) #adjust robot heading south
         move_arm_up(200,slow_speed) # lift up arm to release cargos
 
         mm_motor = MotorPair("B","A")
         #mm_motor.move(50,'cm',170,slow_speed)
-        gyro_straight_forward(170,30,slow_speed) # backing up to unload cargo ship
-        
+        gyro_straight_forward(170,8,slow_speed) # backing up to unload cargo ship
+
         right_turn_motor(180,slow_speed-10) # robot heading west
-        
+
         mm_motor = MotorPair("A","B")
-        gyro_straight_forward(-90,20,slow_speed) #adjust robot heading west
+        gyro_straight_forward(-90,10,slow_speed) #adjust robot heading west
         move_arm_down(50,slow_speed)
-        
+
         mm_motor = MotorPair("B","A")
-        gyro_straight_forward(-90,70,normal_speed) #moving the cargo ship - backing up to east
-        move_arm_up(150,slow_speed)
+        gyro_straight_forward(-90,11,normal_speed) #moving the cargo ship - backing up to east
+        #move_arm_up(150,slow_speed)
+        move_tail_arm_up(80,normal_speed)
         mm_motor = MotorPair("A","B")
-        gyro_straight_forward(-90,70,normal_speed) #moving forward to west
+        gyro_straight_forward(-90,32,normal_speed) #moving forward to west
         left_turn_motor(180,slow_speed) #facing south
         mm_motor = MotorPair("B","A")
-        
-        gyro_straight_forward(-179,5,normal_speed) #moving forward to north
+        mm_motor.move(1000,'degrees',0,42)
+        #gyro_straight_forward(-179,45,normal_speed) #moving forward to north
         mm_motor = MotorPair("A","B")
-        gyro_straight_forward(0,1,normal_speed)
+        gyro_straight_forward(0,3,normal_speed)
 
         right_turn_motor(180,slow_speed)
         mm_motor.move(600,'degrees',0,42)
-       
+
 
 
 #Round 3 end
